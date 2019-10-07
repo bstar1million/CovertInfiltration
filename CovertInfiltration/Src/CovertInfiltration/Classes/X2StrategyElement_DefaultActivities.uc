@@ -57,8 +57,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	CreateGatherIntel(Templates, "GatherIntel", "RadioTower", default.Radio);
 	CreateGatherSupplies(Templates, "GatherSupplies", "SupplyExtraction", default.SupplyLift);
 	
-	CreateIntelRescue(Templates, "IntelRescue", "ResOps", default.Resistance);
+	CreateRescueWaitActivity(Templates);
 	CreateSupplyRescue(Templates, "SupplyRescue", "ResOps", default.Resistance);
+	CreateIntelRescue(Templates, "IntelRescue", "ResOps", default.Resistance);
 	
 	return Templates;
 }
@@ -446,35 +447,37 @@ static function CreateRescueWaitActivity (out array<X2DataTemplate> Templates)
 	Templates.AddItem(Activity);
 }
 
-static function CreateIntelRescue (out array<X2DataTemplate> Templates, string ActivityName, string MeshPath, string MissionIcon)
+static function CreateGatherIntel (out array<X2DataTemplate> Templates, string ActivityName, string MeshPath, string MissionIcon)
 {
-	local X2ActivityTemplate_Infiltration Activity;
-	local X2CovertActionTemplate CovertAction;
+	local X2ActivityTemplate_Assault Activity;
 	
-	CovertAction = class'X2StrategyElement_InfiltrationActions'.static.CreateInfiltrationTemplate(name("CovertAction_" $ ActivityName $ "Infil"), true);
-	Activity = CreateStandardInfilActivity(CovertAction, ActivityName, MeshPath, MissionIcon);
-
+	`CREATE_X2TEMPLATE(class'X2ActivityTemplate_Assault', Activity, name("Activity_" $ ActivityName));
+	
+	Activity.OverworldMeshPath = "UI_3D.Overwold_Final." $ MeshPath;
+	Activity.UIButtonIcon = MissionIcon;
+	Activity.MissionImage = "img:///UILibrary_XPACK_StrategyImages.CovertOp_Recover_X_Intel";
+	
 	Activity.MissionRewards.AddItem('Reward_Container');
 	Activity.GetMissionDifficulty = GetMissionDifficultyFromMonth;
 	Activity.WasMissionSuccessful = class'X2StrategyElement_DefaultMissionSources'.static.OneStrategyObjectiveCompleted;
-	
-	Templates.AddItem(CovertAction);
+
 	Templates.AddItem(Activity);
 }
 
-static function CreateSupplyRescue (out array<X2DataTemplate> Templates, string ActivityName, string MeshPath, string MissionIcon)
+static function CreateGatherSupplies (out array<X2DataTemplate> Templates, string ActivityName, string MeshPath, string MissionIcon)
 {
-	local X2ActivityTemplate_Infiltration Activity;
-	local X2CovertActionTemplate CovertAction;
+	local X2ActivityTemplate_Assault Activity;
 	
-	CovertAction = class'X2StrategyElement_InfiltrationActions'.static.CreateInfiltrationTemplate(name("CovertAction_" $ ActivityName $ "Infil"), true);
-	Activity = CreateStandardInfilActivity(CovertAction, ActivityName, MeshPath, MissionIcon);
-
+	`CREATE_X2TEMPLATE(class'X2ActivityTemplate_Assault', Activity, name("Activity_" $ ActivityName));
+	
+	Activity.OverworldMeshPath = "UI_3D.Overwold_Final." $ MeshPath;
+	Activity.UIButtonIcon = MissionIcon;
+	Activity.MissionImage = "img:///UILibrary_XPACK_StrategyImages.CovertOp_Recover_X_Supplies";
+	
 	Activity.MissionRewards.AddItem('Reward_Container');
 	Activity.GetMissionDifficulty = GetMissionDifficultyFromMonth;
 	Activity.WasMissionSuccessful = class'X2StrategyElement_DefaultMissionSources'.static.OneStrategyObjectiveCompleted;
-	
-	Templates.AddItem(CovertAction);
+
 	Templates.AddItem(Activity);
 }
 
