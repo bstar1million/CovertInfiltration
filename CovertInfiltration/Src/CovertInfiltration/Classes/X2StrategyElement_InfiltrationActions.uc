@@ -6,7 +6,9 @@
 //  WOTCStrategyOverhaul Team
 //---------------------------------------------------------------------------------------
 
-class X2StrategyElement_InfiltrationActions extends X2StrategyElement;
+class X2StrategyElement_InfiltrationActions extends X2StrategyElement config(Infiltration);
+
+var config int MINIMUM_INFILTRATORS;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -22,7 +24,8 @@ static function X2CovertInfiltrationTemplate CreateInfiltrationTemplate(name Cov
 {
 	local X2CovertInfiltrationTemplate Template;
 	local ActionFlatRiskSitRep FlatRiskSitRep;
-
+	local int CurrentSlots, OptionalSlots, i;
+	
 	`CREATE_X2TEMPLATE(class'X2CovertInfiltrationTemplate', Template, CovertActionName);
 
 	foreach class'X2Helper_Infiltration'.default.FlatRiskSitReps(FlatRiskSitRep)
@@ -32,12 +35,25 @@ static function X2CovertInfiltrationTemplate CreateInfiltrationTemplate(name Cov
 
 	if (bCreateSlots)
 	{
-		Template.Slots.AddItem(CreateDefaultStaffSlot('InfiltrationStaffSlot'));
-		Template.Slots.AddItem(CreateDefaultStaffSlot('InfiltrationStaffSlot'));
-		Template.Slots.AddItem(CreateDefaultStaffSlot('InfiltrationStaffSlot'));
-		Template.Slots.AddItem(CreateDefaultStaffSlot('InfiltrationStaffSlot'));
-		Template.Slots.AddItem(CreateDefaultOptionalSlot('InfiltrationStaffSlot'));
-		Template.Slots.AddItem(CreateDefaultOptionalSlot('InfiltrationStaffSlot'));
+		CurrentSlots = 0;
+		OptionalSlots = 6 - default.MINIMUM_INFILTRATORS;
+		
+		for(i = 0; i < (OptionalSlots / 2); i++)
+		{
+			Template.Slots.AddItem(CreateDefaultOptionalSlot('InfiltrationStaffSlot'));
+			CurrentSlots++;
+		}
+
+		for(i = 0; i < default.MINIMUM_INFILTRATORS; i++)
+		{
+			Template.Slots.AddItem(CreateDefaultStaffSlot('InfiltrationStaffSlot'));
+			CurrentSlots++;
+		}
+		
+		for(i = CurrentSlots; i < 6; i++)
+		{
+			Template.Slots.AddItem(CreateDefaultOptionalSlot('InfiltrationStaffSlot'));
+		}
 	}
 
 	return Template;
