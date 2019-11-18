@@ -1003,6 +1003,11 @@ static function string GetPostMissionText (XComGameState_Activity ActivityState,
 	}
 }
 
+static function bool IsDLCLoaded (name DLCName)
+{
+	// TODO
+}
+
 ///////////////
 /// Kill XP ///
 ///////////////
